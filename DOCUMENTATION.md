@@ -466,7 +466,7 @@ Each entry contains:
 ======================================================================
   BIBLIOGRAPHY EVALUATION REPORT
 ======================================================================
-  File: ccbts_vlm_custom.bib
+  File: custom.bib
   Total: 48 | Wrong: 4 | Unverifiable: 16 | Correct: 28 | Time: 3.3 min
 ======================================================================
 
