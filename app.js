@@ -73,6 +73,22 @@ function parseAuthors(raw) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+// BibTeX Content Validator
+// ═══════════════════════════════════════════════════════════════════════
+
+function isValidBibTeX(content) {
+  // A valid BibTeX file must contain at least one entry in the format:
+  // @type{key, fields...}
+  const normalized = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  // Match @type{ ... } blocks — case-insensitive entry type, handled by parser
+  const entryRegex = /@(\w+)\s*\{([^,]*),\s*([\s\S]*?)\n\s*\}/g;
+  const match = entryRegex.test(normalized);
+  // Reset the regex lastIndex so parseBibTeX can use it fresh
+  entryRegex.lastIndex = 0;
+  return match;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 // URL Validator (client-side using fetch)
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -202,27 +218,57 @@ dropZone.addEventListener('dragleave', () => {
   dropZone.classList.remove('drag-over');
 });
 
-dropZone.addEventListener('drop', (e) => {
+dropZone.addEventListener('drop', async (e) => {
   e.preventDefault();
   dropZone.classList.remove('drag-over');
   const file = e.dataTransfer.files[0];
-  if (file && file.name.endsWith('.bib')) {
-    processFile(file);
-  } else {
-    alert('Please drop a .bib file');
+  if (!file) return;
+
+  // Check 1: Must have .bib extension
+  if (!file.name.toLowerCase().endsWith('.bib')) {
+    alert(`Invalid file: "${file.name}" does not have a .bib extension. Please upload a valid BibTeX (.bib) file.`);
+    return;
   }
+
+  // Check 2: Must contain valid BibTeX content
+  const content = await file.text();
+  if (!isValidBibTeX(content)) {
+    alert(`Invalid BibTeX: "${file.name}" has a .bib extension but does not contain valid BibTeX entries. A valid .bib file must contain at least one @entrytype{key, fields...} block.`);
+    return;
+  }
+
+  processFile(file, content);
 });
 
-function handleFileSelect(e) {
+async function handleFileSelect(e) {
   const file = e.target.files[0];
-  if (file) processFile(file);
+  if (!file) return;
+
+  // Check 1: Must have .bib extension
+  if (!file.name.toLowerCase().endsWith('.bib')) {
+    alert(`Invalid file: "${file.name}" does not have a .bib extension. Please upload a valid BibTeX (.bib) file.`);
+    fileInput.value = '';
+    return;
+  }
+
+  // Check 2: Must contain valid BibTeX content
+  const content = await file.text();
+  if (!isValidBibTeX(content)) {
+    alert(`Invalid BibTeX: "${file.name}" has a .bib extension but does not contain valid BibTeX entries. A valid .bib file must contain at least one @entrytype{key, fields...} block.`);
+    fileInput.value = '';
+    return;
+  }
+
+  processFile(file, content);
 }
 
-async function processFile(file) {
+async function processFile(file, content) {
   showProgress(true);
   setProgress(0, `Reading ${file.name}...`);
 
-  const content = await file.text();
+  if (!content) {
+    content = await file.text();
+  }
   setProgress(10, 'Parsing BibTeX...');
 
   const entries = parseBibTeX(content);
