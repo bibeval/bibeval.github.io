@@ -29,7 +29,7 @@ Summary: Total: 48 | Wrong: 4 | Unverifiable: 13 | Correct: 31 | Time: 3.3 min
 
 ## Quick Start
 
-**🌐 Try it online:** [bibeval.github.io/bibeval](https://bibeval.github.io/bibeval/) — upload a `.bib` file and get instant **URL validation** in your browser (no installation needed). For full 10-source author verification, year checking, venue matching, and DOI cross-check, use the CLI below.
+**🌐 Try it online:** [bibeval.github.io/](https://bibeval.github.io/) — upload a `.bib` file and get instant **URL validation** in your browser (no installation needed). For full 10-source author verification, year checking, venue matching, and DOI cross-check, use the CLI below.
 
 ```bash
 # Install
