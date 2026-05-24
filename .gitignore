@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Output files (user-specific)
+*_report.json
+*.bib_report.json
+
+# Bib files (user-specific)
+*.bib
+
+# Review folders
+reviews/
+
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

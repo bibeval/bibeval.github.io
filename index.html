@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BibEval — Bibliography Evaluator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>BibEval</h1>
+    <p class="subtitle">Evaluate .bib files for wrong references</p>
+  </header>
+
+  <main>
+    <!-- Upload Section -->
+    <section id="upload-section">
+      <div id="drop-zone">
+        <div class="drop-content">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <p>Drop your <code>.bib</code> file here</p>
+          <p class="or">or</p>
+          <label class="btn" for="file-input">Choose file</label>
+          <input type="file" id="file-input" accept=".bib">
+          <p class="hint">Evaluation happens in your browser — no data is uploaded</p>
+        </div>
+        <div class="scope-notice">
+          <strong>⚠️ Browser demo scope:</strong> This validates <em>URLs only</em> — checks if each link resolves. For full verification (author order, year accuracy, venue mismatch, title hallucination, DOI cross-check against 10 sources), use the <a href="#cli">CLI tool</a>.
+        </div>
+      </div>
+      <div id="demo-box">
+        <p>No .bib file? <button id="demo-btn" class="link-btn">Try with demo data</button></p>
+      </div>
+    </section>
+
+    <!-- Progress Section (hidden until processing) -->
+    <section id="progress-section" class="hidden">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <p id="progress-text">Parsing file...</p>
+    </section>
+
+    <!-- Results Section (hidden until done) -->
+    <section id="results-section" class="hidden">
+      <div class="summary-bar">
+        <div class="summary-item wrong" id="summary-wrong">
+          <span class="count">0</span>
+          <span class="label">Wrong</span>
+        </div>
+        <div class="summary-item unverifiable" id="summary-unverifiable">
+          <span class="count">0</span>
+          <span class="label">Unverifiable</span>
+        </div>
+        <div class="summary-item correct" id="summary-correct">
+          <span class="count">0</span>
+          <span class="label">Correct</span>
+        </div>
+        <div class="summary-item total">
+          <span class="count" id="summary-total">0</span>
+          <span class="label">Total</span>
+        </div>
+        <div class="summary-item time" id="summary-time">
+          <span class="count">—</span>
+          <span class="label">Time</span>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="wrong">❌ Wrong</button>
+        <button class="filter-btn" data-filter="unverifiable">⚠️ Unverifiable</button>
+        <button class="filter-btn" data-filter="correct">✅ Correct</button>
+      </div>
+
+      <div id="results-table"></div>
+
+      <!-- CLI Note -->
+      <div class="cli-note" id="cli">
+        <h3>Want full verification?</h3>
+        <p>This browser demo validates <strong>URLs only</strong> (HTTP reachability). Full verification — author order, year accuracy, venue mismatch, title hallucination detection, and DOI cross-check against 10 academic databases — requires the CLI tool, which runs natively with async networking, rate limiting, and complex author comparison algorithms that can't run in a browser.</p>
+        <pre><code>pip install -r requirements.txt
+python3 main.py your_references.bib --json -o report.json -v</code></pre>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>BibEval validates against dblp, Semantic Scholar, Crossref, arXiv, ACL, NeurIPS, CVPR, ACM, OpenAlex, and OpenReview — all free, no API keys needed.</p>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
